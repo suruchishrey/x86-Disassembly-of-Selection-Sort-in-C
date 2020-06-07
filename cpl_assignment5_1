@@ -1,0 +1,214 @@
+// C program for implementation of selection sort 
+#include <stdio.h> 
+  
+void swap(int *xp, int *yp) 
+{ 
+    int temp = *xp; 
+    *xp = *yp; 
+    *yp = temp; 
+} 
+  
+void selectionSort(int arr[], int n) 
+{ 
+    int i, j, min_idx; 
+  
+    // One by one move boundary of unsorted subarray 
+    for (i = 0; i < n-1; i++) 
+    { 
+        // Find the minimum element in unsorted array 
+        min_idx = i; 
+        for (j = i+1; j < n; j++) 
+          if (arr[j] < arr[min_idx]) 
+            min_idx = j; 
+  
+        // Swap the found minimum element with the first element 
+        swap(&arr[min_idx], &arr[i]); 
+    } 
+} 
+  
+/* Function to print an array */
+void printArray(int arr[], int size) 
+{ 
+    int i; 
+    for (i=0; i < size; i++) 
+        printf("%d ", arr[i]); 
+    printf("\n"); 
+} 
+  
+// Driver program to test above functions 
+int main() 
+{ 
+    int arr[] = {64, 25, 12}; 
+    int n = sizeof(arr)/sizeof(arr[0]); 
+    selectionSort(arr, n); 
+    printf("Sorted array: \n"); 
+    printArray(arr, n); 
+    return 0; 
+} 
+
+
+swap:
+        push    rbp                                     ;save the value of rbp
+        mov     rbp, rsp                                ;rbp now points to the top of the stack
+        sub	rsp,32                                  ; space allocated on the stack for local variables
+        mov     QWORD PTR [rbp-24], rdi                 ;store the content of rdi,i.e.,address of arr[min_idx](int*xp) into the stack
+        mov     QWORD PTR [rbp-32], rsi                 ;store the content of rdi,i.e.,address of arr[i](int*yp) into the stack
+ line: int temp = *xp; 
+        mov     rax, QWORD PTR [rbp-24]                 ;store the value of xp into rax,rax=xp
+        mov     eax, DWORD PTR [rax]                    ;store the value at address rax into eax,i.e.,eax=*xp
+        mov     DWORD PTR [rbp-4], eax                  ;store the value of eax(*xp) into temp(DWORD PTR [rbp-4]),temp=*xp
+ line: *xp = *yp; 
+        mov     rax, QWORD PTR [rbp-32]                 ;store the value of yp into rax,rax=yp
+        mov     edx, DWORD PTR [rax]                    ;store the value at address rax into edx,i.e.,edx=*yp
+        mov     rax, QWORD PTR [rbp-24]                 ;store the value of xp into rax,rax=xp
+        mov     DWORD PTR [rax], edx                    ;store at address xp, value=edx
+ line: *yp = temp; 
+        mov     rax, QWORD PTR [rbp-32]                 ;store the value of yp into rax,rax=yp
+        mov     edx, DWORD PTR [rbp-4]                  ;edx=temp
+        mov     DWORD PTR [rax], edx                    ;*yp=edx
+        nop                                             ;a nop command  stands for “No Operation”. This instruction does nothing during execution. It occupies 1-Byte of memory space and spends 4-Machine Cycles.
+        pop     rbp                                     ;restore caller's rbp.
+        ret                                             ;pop the return address into rip
+selectionSort:
+        push    rbp                                             ;save the value of rbp(old)
+        mov     rbp, rsp                                        ;rbp now points to the top of the stack
+        sub     rsp, 32                                         ; space allocated on the stack for local variables
+
+        mov     QWORD PTR [rbp-24], rdi                         ;store the address of array into the stack at offset 24(rbp-24)
+        mov     DWORD PTR [rbp-28], esi                         ;store the value of n(=3) into the stack
+        mov     DWORD PTR [rbp-4], 0                            ;location of local variable i,store 0 in it
+        jmp     .L3                                             ;go to .L3
+
+.L7:                                                            
+        mov     eax, DWORD PTR [rbp-4]                          ;store the value of i into eax
+ line: min_idx = i; 
+        mov     DWORD PTR [rbp-12], eax                         ;store the value of eax(i.e.i for now) into min_idx
+        mov     eax, DWORD PTR [rbp-4]                          ;stire the value of i into eax
+ line: for (j = i+1; j < n; j++);
+        add     eax, 1                                          ;add 1 to eax
+        mov     DWORD PTR [rbp-8], eax                          ;store the value of eax into j
+        jmp     .L4                                             ;go to .L4
+.L6:                                                            ;this label check the inside if condition in the inner for loop body
+ line: if (arr[j] < arr[min_idx]);
+        mov     eax, DWORD PTR [rbp-8]                          ;store the value of j into eax
+        cdqe                                                    ; rax=j.The CDQE instruction sign-extends a DWORD (32-bit value) in the EAX register to a QWORD (64-bit value) in the RAX register.
+        lea     rdx, [0+rax*4]                                  ;compute 0+rax*4 and store it into rdx(scale factor=4 as int is of 4 bytes)
+        mov     rax, QWORD PTR [rbp-24]                         ;store the  address of array into rax 
+        add     rax, rdx                                        ;make rax point to jth location,i.e.,store the address of jth location into rax(by adding (i.e.,moving)the array pointer by j locations) 
+        mov     edx, DWORD PTR [rax]                            ;edx=arr[j]
+        mov     eax, DWORD PTR [rbp-12]                         ;eax=min_idx
+        cdqe                                                    ;rax=min_idx(sign extended a DWORD in eax register to a QWORD in rax register)
+        lea     rcx, [0+rax*4]                                  ;compute 0+rax*4 and store it into rcx(scale factor=4 as int is of 4 bytes)
+        mov     rax, QWORD PTR [rbp-24]                         ;store the  address of array into rax 
+        add     rax, rcx                                        ;make rax point to min_idx(th) location,i.e.,store the address of min_idxth location into rax(by adding (i.e.,moving)the array pointer by min_idx locations)
+        mov     eax, DWORD PTR [rax]                            ;eax=arr[min_idx]
+        cmp     edx, eax                                        ;compare edx and eax
+        jge     .L5                                             ;if(arr[j]>arr[min_idx])go to label L5
+ line:  min_idx = j; 
+        mov     eax, DWORD PTR [rbp-8]                          ;if the if condition satisfies then do eax=j
+        mov     DWORD PTR [rbp-12], eax                         ;and min_idx=eax
+.L5:                                                            ;this label increments j
+ line:  for (j = i+1; j < n; j++);
+        add     DWORD PTR [rbp-8], 1                            ;j++ and resume the loop
+.L4:                                                            ;this label is to check for the condition in the inner for loop
+ line:for (j = i+1; j < n; j++); 
+        mov     eax, DWORD PTR [rbp-8]                          ;store the value of j into eax(32 bit register,extended accumulator register)
+        cmp     eax, DWORD PTR [rbp-28]                         ;compare eax with n
+        jl      .L6                                             ;if eax(i.e.,j) is less than n then go to .L6
+ line: swap(&arr[min_idx], &arr[i]);
+        mov     eax, DWORD PTR [rbp-4]                          ;after the inner for loop is over,store the value of i into eax
+        cdqe                                                    ;rax=i
+        lea     rdx, [0+rax*4]                                  ;compute 0+rax*4 and store the result in rdx
+        mov     rax, QWORD PTR [rbp-24]                         ;store the address of array into rax
+        add     rdx, rax                                        ;make rdx point to ith location,i.e.,store the address of ith location into rdx(by adding (i.e.,moving)the array pointer by i locations) 
+        mov     eax, DWORD PTR [rbp-12]                         ;eax=min_idx
+        cdqe                                                    ;rax=min_idx
+        lea     rcx, [0+rax*4]                                  ;compute 0+rax*4 and store the result in rcx
+        mov     rax, QWORD PTR [rbp-24]                         ;store the address of array into rax
+        add     rax, rcx                                        ;make rax point to min_idx(th) location,i.e.,store the address of min_idxth location into rax(by adding (i.e.,moving)the array pointer by min_idx locations)
+        mov     rsi, rdx                                        ;store the address of arr[i] into rsi
+        mov     rdi, rax                                        ;store the address of arr[min_idx] into rdi
+        call    swap                                            ;call swap() function
+        add     DWORD PTR [rbp-4], 1                            ;i++
+.L3:                                                            ;this label check the condition part of the for loop
+        mov     eax, DWORD PTR [rbp-28]                         ;store the value of n into eax(32 but register) 
+        sub     eax, 1                                          ;subtract 1 from n
+        cmp     DWORD PTR [rbp-4], eax                          ;compare i to value stored in eax(i.e. n-1)
+        jl      .L7                                             ;if i is lesser than n then go to .L7
+        nop                                                     ;no-operation
+        nop
+        leave                                                   ;copy rbp to rsp and then restore the old rbp from the stack.
+        ret                                                     ;pop the return address into rip
+.LC0:
+        .string "%d "
+printArray:
+        push    rbp                                             ;save the value of rbp
+        mov     rbp, rsp                                        ;rbp now points to the top of the stack
+        sub     rsp, 32                                         ; space allocated on the stack for the local variables
+        mov     QWORD PTR [rbp-24], rdi                         ;store the value of rdi into stack(address of the array waas there in rdi)
+        mov     DWORD PTR [rbp-28], esi                         ;store the value of esi(variable size's value) into stack
+ line: for (i=0; i < size; i++);
+        mov     DWORD PTR [rbp-4], 0                            ;i=0,store the value 0 in i(DWORD PTR [rbp-4] is the location of i in the stack)
+        jmp     .L9                                             ;go to .L9
+ line:  printf("%d ", arr[i]); 
+.L10:
+        mov     eax, DWORD PTR [rbp-4]                          ;eax=i(DWORD PTR [rbp-4])
+        cdqe                                                    ;rax=i(sign extended)
+        lea     rdx, [0+rax*4]                                  ;compute the value of 0+rax(i)*4 ans store it in rdx
+        mov     rax, QWORD PTR [rbp-24]                         ;rax=address of the array
+        add     rax, rdx                                        ;store address of ith location of array by adding i*4 to the current address
+        mov     eax, DWORD PTR [rax]                            ;eax=arr[i]
+        mov     esi, eax                                        ;second argument (for format string passed): integer to print
+        mov     edi, OFFSET FLAT:.LC0                           ;first argument is the format string 
+        mov     eax, 0                                          ;need to zero out the eax register , or else printf will assume we're passing it vector registers and crash.
+        call    printf                                          ;call printf
+        add     DWORD PTR [rbp-4], 1                            ;i++
+.L9:                                                            ;this label checks the condition if i<size
+        mov     eax, DWORD PTR [rbp-4]                          ;eax=i
+        cmp     eax, DWORD PTR [rbp-28]                         ;comapre eax with size(DWORD PTR [rbp-28] is the location of variable size in the stack)
+        jl      .L10                                            ;if eax is less than size than go to .L10
+ line: printf("\n"); 
+        mov     edi, 10                                         ;edi=10
+        call    putchar                                         ;call putchar
+        nop
+        leave                                                   ;copy rbp to rsp and then restore the old rbp from the stack.
+        ret                                                     ;pop the return address into rip
+.LC1:
+        .string "Sorted array: "
+main:
+        push    rbp                                             ;save the value of rbp
+        mov     rbp, rsp                                        ;rbp now points to the top of the stack
+        sub     rsp, 16                                         ; space allocated on the stack for the local variables(the whole array is created on the stack)
+ line: int arr[] = {64, 25, 12}; 
+        mov     DWORD PTR [rbp-16], 64                          ; location of the first index(0),storing 64 in it(as the stack grows downwards its rbp-16 for the first index)
+        mov     DWORD PTR [rbp-12], 25                          ; location of the index 1,storing 25 in it(the stack)
+        mov     DWORD PTR [rbp-8], 12                           ; location of the index 2,storing 12 in it(the stack)
+ line: int n = sizeof(arr)/sizeof(arr[0]); 
+        mov     DWORD PTR [rbp-4], 3                            ; location of the variable n,storing 3(size of the array)
+ line: selectionSort(arr, n); 
+        mov     edx, DWORD PTR [rbp-4]                          ;store the value of n(=3) in a data register(32 bit),edx
+        lea     rax, [rbp-16]                                   ;a pointer to the array(as lea is load effective address so address of the first index of the array) is saved in the rax(64 bit) register
+        
+        ;Right now, these registers are being used to transmit the first two (integer) function parameters
+        mov     esi, edx                                        ;store the value of edx which is n(=3) for now
+        mov     rdi, rax                                        ;store the value of rax which is pointer to the array into rdi(destination index register) 
+        call    selectionSort                                   ;call selectionSort() as now its parameters have been stored and the return address has also been placed on the stack by this instruction.
+ line:  printf("Sorted array: \n"); 
+        mov     edi, OFFSET FLAT:.LC1                           ;first argument : format string
+        call    puts                                            ;call puts with arguments stated above
+ line: printArray(arr, n);
+        mov     edx, DWORD PTR [rbp-4]                          ;edx=n
+        lea     rax, [rbp-16]                                   ;load effective address of the array into rax
+        mov     esi, edx                                        ;esi=edx(n)
+        mov     rdi, rax                                        ;rdi=rax(address of the array)
+        call    printArray                                      ;call printArray with the arguments stated above 
+ line: return 0; 
+        mov     eax, 0                                          ;argument, in this case: return value
+        leave                                                   ;copy rbp to rsp and then restore the old rbp from the stack.
+        ret                                                     ;pop the return address into rip
+
+
+Note: The call x86 instruction is basically equivalent to
+
+push rip + 2 ; return address is current address + size of two instructions
+jmp _Function(given function)   ;go to function definition
