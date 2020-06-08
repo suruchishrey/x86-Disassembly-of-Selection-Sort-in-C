@@ -160,7 +160,7 @@ printArray:
         mov     eax, DWORD PTR [rax]                            ;eax=arr[i]
         mov     esi, eax                                        ;second argument (for format string passed): integer to print
         mov     edi, OFFSET FLAT:.LC0                           ;first argument is the format string 
-        mov     eax, 0                                          ;need to zero out the eax register , or else printf will assume we're passing it vector registers and crash.
+        mov     eax, 0                                          ;printf here has an integer argument so there’s the need to zero out the eax register , or else printf will assume we're passing it vector registers and crash.
         call    printf                                          ;call printf
         add     DWORD PTR [rbp-4], 1                            ;i++
 .L9:                                                            ;this label checks the condition if i<size
@@ -203,12 +203,16 @@ main:
         mov     rdi, rax                                        ;rdi=rax(address of the array)
         call    printArray                                      ;call printArray with the arguments stated above 
  line: return 0; 
-        mov     eax, 0                                          ;argument, in this case: return value
+        mov     eax, 0                                          ;eax=0,in this case: return value
         leave                                                   ;copy rbp to rsp and then restore the old rbp from the stack.
         ret                                                     ;pop the return address into rip
 
 
-Note: The call x86 instruction is basically equivalent to
-
+Note:
+1)The call x86 instruction is basically equivalent to
 push rip + 2 ; return address is current address + size of two instructions
 jmp _Function(given function)   ;go to function definition
+
+2)OFFSET FLAT translates to an absolute address of the label.
+
+3)rip points to next instruction to execute.
