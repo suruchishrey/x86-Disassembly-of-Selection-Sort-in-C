@@ -1,3 +1,4 @@
+potentialEnergy.c -
 #include<stdio.h>
 
 float potentialEnergy(float m,float h)
